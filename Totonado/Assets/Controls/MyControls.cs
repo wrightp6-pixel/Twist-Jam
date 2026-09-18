@@ -190,6 +190,57 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3f75b954-9791-41da-b336-fc21ecf4f827"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""PlayerCameraControls"",
+            ""id"": ""15ffde2d-5ef2-4a91-ae92-3914ba039e54"",
+            ""actions"": [
+                {
+                    ""name"": ""MoveCam"",
+                    ""type"": ""Value"",
+                    ""id"": ""a49bae40-ca61-4977-912c-eebb41b79410"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true,
+                    ""priority"": 0
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""ab408229-a1b5-4f61-b1bf-003bb01effac"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveCam"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f125b804-e148-42a2-9cf7-9395364ac710"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""MoveCam"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -200,11 +251,15 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
         m_PlayerMoveControls = asset.FindActionMap("PlayerMoveControls", throwIfNotFound: true);
         m_PlayerMoveControls_Move = m_PlayerMoveControls.FindAction("Move", throwIfNotFound: true);
         m_PlayerMoveControls_Jump = m_PlayerMoveControls.FindAction("Jump", throwIfNotFound: true);
+        // PlayerCameraControls
+        m_PlayerCameraControls = asset.FindActionMap("PlayerCameraControls", throwIfNotFound: true);
+        m_PlayerCameraControls_MoveCam = m_PlayerCameraControls.FindAction("MoveCam", throwIfNotFound: true);
     }
 
     ~@MyControls()
     {
         UnityEngine.Debug.Assert(!m_PlayerMoveControls.enabled, "This will cause a leak and performance issues, MyControls.PlayerMoveControls.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_PlayerCameraControls.enabled, "This will cause a leak and performance issues, MyControls.PlayerCameraControls.Disable() has not been called.");
     }
 
     /// <summary>
@@ -383,6 +438,102 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="PlayerMoveControlsActions" /> instance referencing this action map.
     /// </summary>
     public PlayerMoveControlsActions @PlayerMoveControls => new PlayerMoveControlsActions(this);
+
+    // PlayerCameraControls
+    private readonly InputActionMap m_PlayerCameraControls;
+    private List<IPlayerCameraControlsActions> m_PlayerCameraControlsActionsCallbackInterfaces = new List<IPlayerCameraControlsActions>();
+    private readonly InputAction m_PlayerCameraControls_MoveCam;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "PlayerCameraControls".
+    /// </summary>
+    public struct PlayerCameraControlsActions
+    {
+        private @MyControls m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public PlayerCameraControlsActions(@MyControls wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerCameraControls/MoveCam".
+        /// </summary>
+        public InputAction @MoveCam => m_Wrapper.m_PlayerCameraControls_MoveCam;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_PlayerCameraControls; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="PlayerCameraControlsActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(PlayerCameraControlsActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="PlayerCameraControlsActions" />
+        public void AddCallbacks(IPlayerCameraControlsActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PlayerCameraControlsActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PlayerCameraControlsActionsCallbackInterfaces.Add(instance);
+            @MoveCam.started += instance.OnMoveCam;
+            @MoveCam.performed += instance.OnMoveCam;
+            @MoveCam.canceled += instance.OnMoveCam;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="PlayerCameraControlsActions" />
+        private void UnregisterCallbacks(IPlayerCameraControlsActions instance)
+        {
+            @MoveCam.started -= instance.OnMoveCam;
+            @MoveCam.performed -= instance.OnMoveCam;
+            @MoveCam.canceled -= instance.OnMoveCam;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="PlayerCameraControlsActions.UnregisterCallbacks(IPlayerCameraControlsActions)" />.
+        /// </summary>
+        /// <seealso cref="PlayerCameraControlsActions.UnregisterCallbacks(IPlayerCameraControlsActions)" />
+        public void RemoveCallbacks(IPlayerCameraControlsActions instance)
+        {
+            if (m_Wrapper.m_PlayerCameraControlsActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="PlayerCameraControlsActions.AddCallbacks(IPlayerCameraControlsActions)" />
+        /// <seealso cref="PlayerCameraControlsActions.RemoveCallbacks(IPlayerCameraControlsActions)" />
+        /// <seealso cref="PlayerCameraControlsActions.UnregisterCallbacks(IPlayerCameraControlsActions)" />
+        public void SetCallbacks(IPlayerCameraControlsActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PlayerCameraControlsActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PlayerCameraControlsActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="PlayerCameraControlsActions" /> instance referencing this action map.
+    /// </summary>
+    public PlayerCameraControlsActions @PlayerCameraControls => new PlayerCameraControlsActions(this);
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerMoveControls" which allows adding and removing callbacks.
     /// </summary>
@@ -404,5 +555,20 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerCameraControls" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="PlayerCameraControlsActions.AddCallbacks(IPlayerCameraControlsActions)" />
+    /// <seealso cref="PlayerCameraControlsActions.RemoveCallbacks(IPlayerCameraControlsActions)" />
+    public interface IPlayerCameraControlsActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "MoveCam" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMoveCam(InputAction.CallbackContext context);
     }
 }

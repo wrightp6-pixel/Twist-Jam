@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 // This class is heavily inlfuenced by an duses soem code from iHeartGameDev on YouTube
@@ -27,6 +28,11 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private float fallMultipler; // Chnages fall time
     private bool isPressingJump = false;
     private bool isJumping = false;
+
+    [SerializeField] Camera cam;
+    private Vector3 camForward;
+
+    public GameObject playerModel;
 
 
 
@@ -72,7 +78,7 @@ public class PlayerMove : MonoBehaviour
         {
             handleRotation();
         }
-        // Because grounded movement is absed on where player was last frame and gravity effects taht check, it
+        // Because grounded movement is based on where player was last frame and gravity effects that check, it
         // must go after movement
         handleGravity();
         // Jump must go after handleGravity because, in handleGravity, we set y velocity = 0 if on the ground, which would wipe out our change to y velcoity in handleJump
@@ -84,9 +90,12 @@ public class PlayerMove : MonoBehaviour
     // ===================== Methods =====================
 
     private void movePlayer()
-    {
+    { 
         // Update movement value based on player inputs
         playerMovementFlat = myControls.PlayerMoveControls.Move.ReadValue<Vector2>();
+
+        //
+        //Vector3 forwardRelative = 
         playerMovementTotal.x = playerMovementFlat.x * moveSpeed;
         playerMovementTotal.z = playerMovementFlat.y * moveSpeed;
 
@@ -98,8 +107,23 @@ public class PlayerMove : MonoBehaviour
             isPressingMove = true;
         }
 
+        Vector3 camForward = cam.transform.forward;
+        camForward.y = 0;
+        Vector3 camRight = cam.transform.right;
+        camRight.y = 0;
+
+        // Tutorial: https://www.youtube.com/watch?v=reWtxGTyN78
+        // Create relative camera direction
+        Vector3 forwardRelative = playerMovementTotal.z * camForward;
+        Vector3 rightRelative = playerMovementTotal.x * camRight;
+
+        Vector3 moveDirection = forwardRelative + rightRelative;
+        playerMovementTotal.x = moveDirection.x;
+        playerMovementTotal.z = moveDirection.z;
+
         // Move
         charCon.Move(playerMovementTotal * Time.deltaTime);
+        //charCon.Move(moveDirection * Time.deltaTime);
     }
 
     // Make the player rotate in the direction thay are moving towards
@@ -109,13 +133,13 @@ public class PlayerMove : MonoBehaviour
         // Get the direction to turn towards to be the direction the player is moving in
         Vector3 positionToLookAt = new Vector3(playerMovementTotal.x, 0.0f, playerMovementTotal.z);
 
-        Quaternion currRotation = transform.rotation;
+        Quaternion currRotation = playerModel.transform.rotation;
 
        
         // Move player character rotation to be looking in direction 
         Quaternion targetRotation = Quaternion.LookRotation(positionToLookAt);
         // Uses spherical inetrpolation to rotate between current rotation and target rotation
-        transform.rotation = Quaternion.Slerp(currRotation, targetRotation, rotationRate *Time.deltaTime);
+        playerModel.transform.rotation = Quaternion.Slerp(currRotation, targetRotation, rotationRate *Time.deltaTime);
         
 
     }
