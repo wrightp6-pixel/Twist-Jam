@@ -111,6 +111,16 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Twist"",
+                    ""type"": ""Button"",
+                    ""id"": ""61aa9bcc-845c-496b-97e8-6645b7a0ba87"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -201,6 +211,28 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2846ec4c-9382-460f-af54-bc95bdaa1294"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Twist"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2eabef38-08c5-470c-b2fc-4915b6ad6311"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Twist"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -251,6 +283,7 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
         m_PlayerMoveControls = asset.FindActionMap("PlayerMoveControls", throwIfNotFound: true);
         m_PlayerMoveControls_Move = m_PlayerMoveControls.FindAction("Move", throwIfNotFound: true);
         m_PlayerMoveControls_Jump = m_PlayerMoveControls.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerMoveControls_Twist = m_PlayerMoveControls.FindAction("Twist", throwIfNotFound: true);
         // PlayerCameraControls
         m_PlayerCameraControls = asset.FindActionMap("PlayerCameraControls", throwIfNotFound: true);
         m_PlayerCameraControls_MoveCam = m_PlayerCameraControls.FindAction("MoveCam", throwIfNotFound: true);
@@ -337,6 +370,7 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
     private List<IPlayerMoveControlsActions> m_PlayerMoveControlsActionsCallbackInterfaces = new List<IPlayerMoveControlsActions>();
     private readonly InputAction m_PlayerMoveControls_Move;
     private readonly InputAction m_PlayerMoveControls_Jump;
+    private readonly InputAction m_PlayerMoveControls_Twist;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerMoveControls".
     /// </summary>
@@ -356,6 +390,10 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerMoveControls/Jump".
         /// </summary>
         public InputAction @Jump => m_Wrapper.m_PlayerMoveControls_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerMoveControls/Twist".
+        /// </summary>
+        public InputAction @Twist => m_Wrapper.m_PlayerMoveControls_Twist;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -388,6 +426,9 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Twist.started += instance.OnTwist;
+            @Twist.performed += instance.OnTwist;
+            @Twist.canceled += instance.OnTwist;
         }
 
         /// <summary>
@@ -405,6 +446,9 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Twist.started -= instance.OnTwist;
+            @Twist.performed -= instance.OnTwist;
+            @Twist.canceled -= instance.OnTwist;
         }
 
         /// <summary>
@@ -555,6 +599,13 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Twist" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTwist(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerCameraControls" which allows adding and removing callbacks.

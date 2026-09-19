@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -10,7 +11,7 @@ public class PlayerMove : MonoBehaviour
     // Reference to input actions from new input system
     private MyControls myControls;
 
-    CharacterController charCon;
+    public CharacterController charCon;
 
     private Vector2 playerMovementFlat;
     private Vector3 playerMovementTotal;
@@ -33,6 +34,13 @@ public class PlayerMove : MonoBehaviour
     private Vector3 camForward;
 
     public GameObject playerModel;
+
+    // Audio
+    private AudioSource audioSource;
+    [SerializeField] private AudioClip gust;
+
+    // property for Flip Switch to access (delayed version of isGrounded)
+    //private bool isGroundedSwitch;
 
 
 
@@ -66,8 +74,9 @@ public class PlayerMove : MonoBehaviour
         myControls.PlayerMoveControls.Enable();
         playerMovementFlat = new Vector2(0, 0);
         playerMovementTotal = new Vector3(0, 0, 0);
+        audioSource = GetComponent<AudioSource>();
 
-        
+
     }
 
     // Update is called once per frame
@@ -182,7 +191,7 @@ public class PlayerMove : MonoBehaviour
         // Check if player can jump
         if (!isJumping && charCon.isGrounded && isPressingJump)
         {
-            Debug.Log("Jump");
+            //Debug.Log("Jump");
             isJumping = true;
             // Set the intial velocity of jump (initial velocity is always the point when velocity is greatest)
             playerMovementTotal.y = initialJumpVelocity;
@@ -198,7 +207,17 @@ public class PlayerMove : MonoBehaviour
     {
         // See whether the player has pressed the jump button
         isPressingJump = context.ReadValueAsButton();
-        Debug.Log(isPressingJump);
+        //Debug.Log(isPressingJump);
+        //StartCoroutine(waitIsGrounded());
     }
 
+    public void OnTwist() 
+    {
+        // Play wind gust when storm and platforms change direction
+        //audioSource.PlayOneShot(gust);
+    }
+
+    
+
+   
 }
