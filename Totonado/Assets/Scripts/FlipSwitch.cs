@@ -14,12 +14,19 @@ public class FlipSwitch : MonoBehaviour
     [SerializeField] private GameObject platform;
     [SerializeField] private PlayerMove player;
 
+    [SerializeField] private bool startOpposite;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         //isSwitching = false;
         axis = new Vector3(0, 1, 0);
         //isOnRight = true;
+        if(startOpposite)
+        {
+            // Swap platform to other side of flip switch
+            platform.transform.RotateAround(rotatePoint.transform.position, axis, switchRate);
+        }
     }
 
     // Update is called once per frame
@@ -41,8 +48,9 @@ public class FlipSwitch : MonoBehaviour
 
     IEnumerator waitSwitch()
     {
+        // Add small buffer until platform switches
+        yield return new WaitForSeconds(0.075f);
         // Remove platform object during transition period
-        yield return new WaitForSeconds(0.05f);
         platform.gameObject.SetActive(false);
         yield return new WaitForSeconds(switchTime);
         platform.gameObject.SetActive(true);

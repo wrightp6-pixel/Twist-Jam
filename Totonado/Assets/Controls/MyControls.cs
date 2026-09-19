@@ -121,6 +121,16 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Dash"",
+                    ""type"": ""Button"",
+                    ""id"": ""aad897ac-7275-430a-bee8-c27b98b3d1d1"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -226,11 +236,33 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2eabef38-08c5-470c-b2fc-4915b6ad6311"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Twist"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""55a04113-b089-44b4-8154-65ec08a10d91"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""38bdfbca-3f84-4857-9fd2-e3634b2a6e55"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -284,6 +316,7 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
         m_PlayerMoveControls_Move = m_PlayerMoveControls.FindAction("Move", throwIfNotFound: true);
         m_PlayerMoveControls_Jump = m_PlayerMoveControls.FindAction("Jump", throwIfNotFound: true);
         m_PlayerMoveControls_Twist = m_PlayerMoveControls.FindAction("Twist", throwIfNotFound: true);
+        m_PlayerMoveControls_Dash = m_PlayerMoveControls.FindAction("Dash", throwIfNotFound: true);
         // PlayerCameraControls
         m_PlayerCameraControls = asset.FindActionMap("PlayerCameraControls", throwIfNotFound: true);
         m_PlayerCameraControls_MoveCam = m_PlayerCameraControls.FindAction("MoveCam", throwIfNotFound: true);
@@ -371,6 +404,7 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerMoveControls_Move;
     private readonly InputAction m_PlayerMoveControls_Jump;
     private readonly InputAction m_PlayerMoveControls_Twist;
+    private readonly InputAction m_PlayerMoveControls_Dash;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerMoveControls".
     /// </summary>
@@ -394,6 +428,10 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerMoveControls/Twist".
         /// </summary>
         public InputAction @Twist => m_Wrapper.m_PlayerMoveControls_Twist;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerMoveControls/Dash".
+        /// </summary>
+        public InputAction @Dash => m_Wrapper.m_PlayerMoveControls_Dash;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -429,6 +467,9 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
             @Twist.started += instance.OnTwist;
             @Twist.performed += instance.OnTwist;
             @Twist.canceled += instance.OnTwist;
+            @Dash.started += instance.OnDash;
+            @Dash.performed += instance.OnDash;
+            @Dash.canceled += instance.OnDash;
         }
 
         /// <summary>
@@ -449,6 +490,9 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
             @Twist.started -= instance.OnTwist;
             @Twist.performed -= instance.OnTwist;
             @Twist.canceled -= instance.OnTwist;
+            @Dash.started -= instance.OnDash;
+            @Dash.performed -= instance.OnDash;
+            @Dash.canceled -= instance.OnDash;
         }
 
         /// <summary>
@@ -606,6 +650,13 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTwist(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Dash" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDash(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "PlayerCameraControls" which allows adding and removing callbacks.
