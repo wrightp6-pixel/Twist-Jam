@@ -60,6 +60,8 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private GameObject gameOverText;
     [SerializeField] private GameObject retry;
     [SerializeField] private GameObject quit;
+    [SerializeField] private TextMeshProUGUI tutorialText;
+
 
 
 
@@ -323,6 +325,14 @@ public class PlayerMove : MonoBehaviour
 
 
     }
+
+    public void setTutorialText(string s)
+    {
+        tutorialText.text = s;
+
+    }
+
+    
 
     // ==================== Collisions ====================
 

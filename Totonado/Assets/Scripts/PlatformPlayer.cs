@@ -12,6 +12,7 @@ public class PlatformPlayer : MonoBehaviour
     [SerializeField] SplineContainer splineA;
     [SerializeField] SplineContainer splineB;
     private float splineTime;
+    [SerializeField] private bool isPlatform;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -82,21 +83,28 @@ public class PlatformPlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("PlayerCharacter")) 
+        if(isPlatform)
         {
-            hasPlayer = true;
-            Debug.Log("hasPlayer: " + hasPlayer);
-            prevTransform = platform.transform.position;
-            
+            if (other.gameObject.CompareTag("PlayerCharacter"))
+            {
+                hasPlayer = true;
+                Debug.Log("hasPlayer: " + hasPlayer);
+                prevTransform = platform.transform.position;
+
+            }
         }
+        
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("PlayerCharacter"))
+        if (isPlatform) 
         {
-            hasPlayer = false;
-            Debug.Log("hasPlayer: " + hasPlayer);
+            if (other.gameObject.CompareTag("PlayerCharacter"))
+            {
+                hasPlayer = false;
+                Debug.Log("hasPlayer: " + hasPlayer);
+            }
         }
     }
 }

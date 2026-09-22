@@ -225,7 +225,7 @@ public partial class @MyControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2846ec4c-9382-460f-af54-bc95bdaa1294"",
-                    ""path"": ""<Mouse>/leftButton"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

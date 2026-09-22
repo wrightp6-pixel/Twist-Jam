@@ -9,6 +9,7 @@ TagManager:
   - FlyingObject
   - Checkpoint
   - Fall
+  - Tutorial1
   layers:
   - Default
   - TransparentFX
