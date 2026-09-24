@@ -13,6 +13,7 @@ public class PlatformPlayer : MonoBehaviour
     [SerializeField] SplineContainer splineB;
     private float splineTime;
     [SerializeField] private bool isPlatform;
+
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -40,12 +41,18 @@ public class PlatformPlayer : MonoBehaviour
 
             // Move player based on this
             //player.transform.Translate(vec);
+            if(splineAn.ElapsedTime < splineTime * 0.99f)
             player.charCon.Move(vec);
 
             //Save current position for next frame's calculation
             prevTransform = platform.transform.position;
 
 
+        }
+
+        if(splineAn.ElapsedTime > splineTime)
+        {
+            splineAn.ElapsedTime = 0;
         }
 
 
@@ -59,13 +66,13 @@ public class PlatformPlayer : MonoBehaviour
         {
             Debug.Log("Switch");
             splineAn.Container = splineB;
-            splineAn.ElapsedTime = splineTime - (splineAn.ElapsedTime % splineTime);
+            splineAn.ElapsedTime = splineTime - splineAn.ElapsedTime;
             splineAn.ObjectForwardAxis = SplineComponent.AlignAxis.ZAxis;
 
         } else
         {
             splineAn.Container = splineA;
-            splineAn.ElapsedTime = splineTime - (splineAn.ElapsedTime % splineTime);
+            splineAn.ElapsedTime = splineTime - splineAn.ElapsedTime;
             splineAn.ObjectForwardAxis = SplineComponent.AlignAxis.NegativeZAxis;
         }
         

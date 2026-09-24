@@ -309,6 +309,10 @@ public class PlayerMove : MonoBehaviour
     {
         // Move player back to last checkpoint
 
+
+        this.charCon.detectCollisions = false;
+        charCon.Move(new Vector3(0, 50, 0));
+
         // Calcukate distance bewteen player and checkpoint
         Vector3 distance = new Vector3(0, 0, 0);
         distance.x = checkpoint.transform.position.x - this.transform.position.x;
@@ -318,7 +322,7 @@ public class PlayerMove : MonoBehaviour
         Debug.Log("Distance: " + distance);
        
         // Move player back to checkpoint whiel avoiding collisions so they don't get stuck
-        this.charCon.detectCollisions = false;
+        
         charCon.Move(distance);
         //this.transform.position = gameObject.transform.position;
         this.charCon.detectCollisions = true;

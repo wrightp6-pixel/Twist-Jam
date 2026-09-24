@@ -49,7 +49,7 @@ public class FlipSwitch : MonoBehaviour
     IEnumerator waitSwitch()
     {
         // Add small buffer until platform switches
-        yield return new WaitForSeconds(0.075f);
+        yield return new WaitForSeconds(0.125f);
         // Remove platform object during transition period
         platform.gameObject.SetActive(false);
         yield return new WaitForSeconds(switchTime);
