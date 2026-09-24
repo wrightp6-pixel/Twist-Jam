@@ -26,4 +26,9 @@ public class ManageScenes : MonoBehaviour
     {
         SceneManager.LoadSceneAsync("Credits");
     }
+
+    public void ToEnd()
+    {
+        SceneManager.LoadSceneAsync("Ending");
+    }
 }
